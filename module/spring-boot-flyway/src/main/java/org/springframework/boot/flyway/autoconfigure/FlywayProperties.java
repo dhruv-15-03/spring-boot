@@ -323,7 +323,7 @@ public class FlywayProperties {
 	/**
 	 * List of patterns that identify migrations to ignore when performing validation.
 	 */
-	private @Nullable List<String> ignoreMigrationPatterns;
+	private List<String> ignoreMigrationPatterns = Collections.singletonList("*:future");
 
 	/**
 	 * Whether to attempt to automatically detect SQL migration file encoding.
