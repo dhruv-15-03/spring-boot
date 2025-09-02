@@ -44,7 +44,7 @@ class WebFilterHandler extends ServletComponentHandler {
 	}
 
 	@Override
-	public void doHandle(Map<String, @Nullable Object> attributes, AnnotatedBeanDefinition beanDefinition,
+	public void doHandle(Map<String, ?> attributes, AnnotatedBeanDefinition beanDefinition,
 			BeanDefinitionRegistry registry) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(FilterRegistrationBean.class);
 		builder.addPropertyValue("asyncSupported", attributes.get("asyncSupported"));
@@ -58,7 +58,7 @@ class WebFilterHandler extends ServletComponentHandler {
 		registry.registerBeanDefinition(name, builder.getBeanDefinition());
 	}
 
-	private EnumSet<DispatcherType> extractDispatcherTypes(Map<String, @Nullable Object> attributes) {
+	private EnumSet<DispatcherType> extractDispatcherTypes(Map<String, ?> attributes) {
 		DispatcherType[] dispatcherTypes = (DispatcherType[]) attributes.get("dispatcherTypes");
 		Assert.state(dispatcherTypes != null, "'dispatcherTypes' must not be null");
 		if (dispatcherTypes.length == 0) {
@@ -70,7 +70,7 @@ class WebFilterHandler extends ServletComponentHandler {
 		return EnumSet.of(dispatcherTypes[0], Arrays.copyOfRange(dispatcherTypes, 1, dispatcherTypes.length));
 	}
 
-	private String determineName(Map<String, @Nullable Object> attributes, BeanDefinition beanDefinition) {
+	private String determineName(Map<String, ?> attributes, BeanDefinition beanDefinition) {
 		String filterName = (String) attributes.get("filterName");
 		return (StringUtils.hasText(filterName) ? filterName : getBeanClassName(beanDefinition));
 	}

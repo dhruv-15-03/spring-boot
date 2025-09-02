@@ -115,8 +115,7 @@ class OnClassCondition extends FilteringSpringBootCondition {
 	}
 
 	private @Nullable List<String> getCandidates(AnnotatedTypeMetadata metadata, Class<?> annotationType) {
-		MultiValueMap<String, @Nullable Object> attributes = metadata
-			.getAllAnnotationAttributes(annotationType.getName(), true);
+		MultiValueMap<String, ?> attributes = metadata.getAllAnnotationAttributes(annotationType.getName(), true);
 		if (attributes == null) {
 			return null;
 		}
@@ -126,12 +125,13 @@ class OnClassCondition extends FilteringSpringBootCondition {
 		return candidates;
 	}
 
-	private void addAll(List<String> list, @Nullable List<@Nullable Object> itemsToAdd) {
-		if (itemsToAdd != null) {
-			for (Object item : itemsToAdd) {
-				if (item != null) {
-					Collections.addAll(list, (String[]) item);
-				}
+	private void addAll(List<String> list, @Nullable List<?> itemsToAdd) {
+		if (itemsToAdd == null) {
+			return;
+		}
+		for (Object item : itemsToAdd) {
+			if (item instanceof String[] array) {
+				Collections.addAll(list, array);
 			}
 		}
 	}

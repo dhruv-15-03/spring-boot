@@ -43,7 +43,7 @@ class OnJavaCondition extends SpringBootCondition {
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata.getAnnotationAttributes(ConditionalOnJava.class.getName());
+		Map<String, ?> attributes = metadata.getAnnotationAttributes(ConditionalOnJava.class.getName());
 		Assert.state(attributes != null, "'attributes' must not be null");
 		Range range = (Range) attributes.get("range");
 		Assert.state(range != null, "'range' must not be null");

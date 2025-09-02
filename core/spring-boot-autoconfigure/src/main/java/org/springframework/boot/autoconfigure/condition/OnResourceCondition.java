@@ -42,12 +42,11 @@ class OnResourceCondition extends SpringBootCondition {
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		MultiValueMap<String, @Nullable Object> attributes = metadata
-			.getAllAnnotationAttributes(ConditionalOnResource.class.getName(), true);
+		MultiValueMap<String, ?> attributes = metadata.getAllAnnotationAttributes(ConditionalOnResource.class.getName(), true);
 		Assert.state(attributes != null, "'attributes' must not be null");
 		ResourceLoader loader = context.getResourceLoader();
 		List<String> locations = new ArrayList<>();
-		List<@Nullable Object> resources = attributes.get("resources");
+		List<?> resources = attributes.get("resources");
 		Assert.state(resources != null, "'resources' must not be null");
 		collectValues(locations, resources);
 		Assert.state(!locations.isEmpty(),
@@ -69,12 +68,13 @@ class OnResourceCondition extends SpringBootCondition {
 			.items(locations));
 	}
 
-	private void collectValues(List<String> names, List<@Nullable Object> resources) {
+	private void collectValues(List<String> names, List<?> resources) {
 		for (Object resource : resources) {
-			Object[] items = (Object[]) resource;
-			if (items != null) {
+			if (resource instanceof Object[] items) {
 				for (Object item : items) {
-					names.add((String) item);
+					if (item instanceof String s) {
+						names.add(s);
+					}
 				}
 			}
 		}

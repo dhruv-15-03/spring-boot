@@ -43,7 +43,7 @@ class WebServletHandler extends ServletComponentHandler {
 	}
 
 	@Override
-	public void doHandle(Map<String, @Nullable Object> attributes, AnnotatedBeanDefinition beanDefinition,
+	public void doHandle(Map<String, ?> attributes, AnnotatedBeanDefinition beanDefinition,
 			BeanDefinitionRegistry registry) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(ServletRegistrationBean.class);
 		builder.addPropertyValue("asyncSupported", attributes.get("asyncSupported"));
@@ -57,7 +57,7 @@ class WebServletHandler extends ServletComponentHandler {
 		registry.registerBeanDefinition(name, builder.getBeanDefinition());
 	}
 
-	private String determineName(Map<String, @Nullable Object> attributes, BeanDefinition beanDefinition) {
+	private String determineName(Map<String, ?> attributes, BeanDefinition beanDefinition) {
 		String name = (String) attributes.get("name");
 		return StringUtils.hasText(name) ? name : getBeanClassName(beanDefinition);
 	}
@@ -69,8 +69,7 @@ class WebServletHandler extends ServletComponentHandler {
 	}
 
 	private @Nullable BeanDefinition determineMultipartConfig(AnnotatedBeanDefinition beanDefinition) {
-		Map<String, @Nullable Object> attributes = beanDefinition.getMetadata()
-			.getAnnotationAttributes(MultipartConfig.class.getName());
+		Map<String, ?> attributes = beanDefinition.getMetadata().getAnnotationAttributes(MultipartConfig.class.getName());
 		if (attributes == null) {
 			return null;
 		}

@@ -240,14 +240,14 @@ class AutoConfigurationSorter {
 			return replaced;
 		}
 
+		@SuppressWarnings("DataFlowIssue")
 		private int getOrder() {
 			if (wasProcessed()) {
 				Assert.state(this.autoConfigurationMetadata != null, "'autoConfigurationMetadata' must not be null");
 				return this.autoConfigurationMetadata.getInteger(this.className, "AutoConfigureOrder",
 						AutoConfigureOrder.DEFAULT_ORDER);
 			}
-			Map<String, @Nullable Object> attributes = getAnnotationMetadata()
-				.getAnnotationAttributes(AutoConfigureOrder.class.getName());
+			Map<String, ?> attributes = getAnnotationMetadata().getAnnotationAttributes(AutoConfigureOrder.class.getName());
 			if (attributes != null) {
 				Integer value = (Integer) attributes.get("value");
 				Assert.state(value != null, "'value' must not be null");
@@ -261,9 +261,9 @@ class AutoConfigurationSorter {
 					&& this.autoConfigurationMetadata.wasProcessed(this.className));
 		}
 
+		@SuppressWarnings("DataFlowIssue")
 		private Set<String> getAnnotationValue(Class<?> annotation) {
-			Map<String, @Nullable Object> attributes = getAnnotationMetadata()
-				.getAnnotationAttributes(annotation.getName(), true);
+			Map<String, ?> attributes = getAnnotationMetadata().getAnnotationAttributes(annotation.getName(), true);
 			if (attributes == null) {
 				return Collections.emptySet();
 			}

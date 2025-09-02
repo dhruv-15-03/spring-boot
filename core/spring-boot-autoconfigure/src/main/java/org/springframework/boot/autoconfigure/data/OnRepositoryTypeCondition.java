@@ -39,8 +39,7 @@ class OnRepositoryTypeCondition extends SpringBootCondition {
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata
-			.getAnnotationAttributes(ConditionalOnRepositoryType.class.getName(), true);
+		Map<String, ?> attributes = metadata.getAnnotationAttributes(ConditionalOnRepositoryType.class.getName(), true);
 		Assert.state(attributes != null, "'attributes' must not be null");
 		String store = (String) attributes.get("store");
 		Assert.state(store != null, "'store' must not be null");

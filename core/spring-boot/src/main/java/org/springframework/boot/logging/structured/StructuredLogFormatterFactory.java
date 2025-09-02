@@ -237,7 +237,11 @@ public class StructuredLogFormatterFactory<E> {
 		private List<StructuredLoggingJsonMembersCustomizer<?>> loadStructuredLoggingJsonMembersCustomizers() {
 			return (List) StructuredLogFormatterFactory.this.factoriesLoader.load(
 					StructuredLoggingJsonMembersCustomizer.class,
-					ArgumentResolver.from(StructuredLogFormatterFactory.this.instantiator::getArg));
+					ArgumentResolver.from((requiredType) -> {
+						Object arg = StructuredLogFormatterFactory.this.instantiator.getArg(requiredType);
+						Assert.state(arg != null, () -> "No argument available of type " + requiredType.getName());
+						return arg;
+					}));
 		}
 
 		@SuppressWarnings("unchecked")

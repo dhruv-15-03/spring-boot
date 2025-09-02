@@ -19,7 +19,6 @@ package org.springframework.boot.actuate.autoconfigure.endpoint;
 import java.time.Duration;
 import java.util.function.Function;
 
-import org.jspecify.annotations.Nullable;
 
 import org.springframework.boot.actuate.endpoint.EndpointId;
 import org.springframework.boot.actuate.endpoint.invoker.cache.CachingOperationInvokerAdvisor;
@@ -36,7 +35,7 @@ import org.springframework.core.env.PropertyResolver;
  * @author Stephane Nicoll
  * @author Phillip Webb
  */
-class EndpointIdTimeToLivePropertyFunction implements Function<EndpointId, @Nullable Long> {
+class EndpointIdTimeToLivePropertyFunction implements Function<EndpointId, Long> {
 
 	private static final Bindable<Duration> DURATION = Bindable.of(Duration.class);
 
@@ -51,10 +50,11 @@ class EndpointIdTimeToLivePropertyFunction implements Function<EndpointId, @Null
 	}
 
 	@Override
-	public @Nullable Long apply(EndpointId endpointId) {
+	public Long apply(EndpointId endpointId) {
 		String name = String.format("management.endpoint.%s.cache.time-to-live", endpointId.toLowerCaseString());
 		BindResult<Duration> duration = Binder.get(this.environment).bind(name, DURATION);
-		return duration.map(Duration::toMillis).orElse(null);
+		// Return 0 when no TTL specified (disables caching for that endpoint)
+		return duration.map(Duration::toMillis).orElse(0L);
 	}
 
 }

@@ -57,7 +57,7 @@ class ManagementContextConfigurationImportSelector implements DeferredImportSele
 
 	@Override
 	public String[] selectImports(AnnotationMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata
+		Map<String, ?> attributes = metadata
 			.getAnnotationAttributes(EnableManagementContext.class.getName());
 		Assert.state(attributes != null, "'attributes' must not be null");
 		ManagementContextType contextType = (ManagementContextType) attributes.get("value");
@@ -122,7 +122,7 @@ class ManagementContextConfigurationImportSelector implements DeferredImportSele
 		}
 
 		private ManagementContextType readContextType(AnnotationMetadata annotationMetadata) {
-			Map<String, @Nullable Object> annotationAttributes = annotationMetadata
+			Map<String, ?> annotationAttributes = annotationMetadata
 				.getAnnotationAttributes(ManagementContextConfiguration.class.getName());
 			if (annotationAttributes == null) {
 				return ManagementContextType.ANY;
@@ -133,7 +133,7 @@ class ManagementContextConfigurationImportSelector implements DeferredImportSele
 		}
 
 		private int readOrder(AnnotationMetadata annotationMetadata) {
-			Map<String, @Nullable Object> attributes = annotationMetadata
+			Map<String, ?> attributes = annotationMetadata
 				.getAnnotationAttributes(Order.class.getName());
 			Integer order = (attributes != null) ? (Integer) attributes.get("value") : null;
 			return (order != null) ? order : Ordered.LOWEST_PRECEDENCE;

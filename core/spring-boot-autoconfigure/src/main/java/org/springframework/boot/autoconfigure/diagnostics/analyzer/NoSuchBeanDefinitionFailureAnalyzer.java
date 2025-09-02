@@ -257,7 +257,7 @@ class NoSuchBeanDefinitionFailureAnalyzer extends AbstractInjectionFailureAnalyz
 		}
 
 		private boolean hasName(MethodMetadata methodMetadata, String name) {
-			Map<String, @Nullable Object> attributes = methodMetadata.getAnnotationAttributes(Bean.class.getName());
+			Map<String, ?> attributes = methodMetadata.getAnnotationAttributes(Bean.class.getName());
 			String[] candidates = (attributes != null) ? (String[]) attributes.get("name") : null;
 			if (candidates != null) {
 				for (String candidate : candidates) {

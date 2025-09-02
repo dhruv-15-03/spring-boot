@@ -37,8 +37,7 @@ class OnThreadingCondition extends SpringBootCondition {
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata
-			.getAnnotationAttributes(ConditionalOnThreading.class.getName());
+		Map<String, ?> attributes = metadata.getAnnotationAttributes(ConditionalOnThreading.class.getName());
 		Assert.state(attributes != null, "'attributes' must not be null");
 		Threading threading = (Threading) attributes.get("value");
 		Assert.state(threading != null, "'threading' must not be null");

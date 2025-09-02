@@ -94,17 +94,11 @@ public abstract class InfoPropertiesInfoContributor<T extends InfoProperties> im
 	 * @return the raw content
 	 */
 	protected Map<String, Object> extractContent(PropertySource<?> propertySource) {
-		Iterable<@Nullable ConfigurationPropertySource> adapted = ConfigurationPropertySources.from(propertySource);
-		return new Binder(ensureNonNullContent(adapted)).bind("", STRING_OBJECT_MAP).orElseGet(LinkedHashMap::new);
+		Iterable<ConfigurationPropertySource> adapted = ConfigurationPropertySources.from(propertySource);
+		return new Binder(adapted).bind("", STRING_OBJECT_MAP).orElseGet(LinkedHashMap::new);
 	}
 
-	private Iterable<ConfigurationPropertySource> ensureNonNullContent(
-			Iterable<@Nullable ConfigurationPropertySource> adapted) {
-		for (ConfigurationPropertySource source : adapted) {
-			Assert.state(source != null, "'source' must not be null");
-		}
-		return (Iterable<ConfigurationPropertySource>) adapted;
-	}
+	// All configuration property sources provided by ConfigurationPropertySources.from(...) are non-null.
 
 	/**
 	 * Post-process the content to expose. Elements can be added, changed or removed.

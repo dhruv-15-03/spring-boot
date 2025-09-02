@@ -160,8 +160,7 @@ class OnWebApplicationCondition extends FilteringSpringBootCondition {
 	}
 
 	private Type deduceType(AnnotatedTypeMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata
-			.getAnnotationAttributes(ConditionalOnWebApplication.class.getName());
+		Map<String, ?> attributes = metadata.getAnnotationAttributes(ConditionalOnWebApplication.class.getName());
 		if (attributes != null) {
 			Object type = attributes.get("type");
 			Assert.state(type != null, "'type' must not be null");

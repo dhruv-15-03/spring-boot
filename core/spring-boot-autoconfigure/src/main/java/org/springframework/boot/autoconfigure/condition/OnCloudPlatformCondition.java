@@ -37,8 +37,7 @@ class OnCloudPlatformCondition extends SpringBootCondition {
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata
-			.getAnnotationAttributes(ConditionalOnCloudPlatform.class.getName());
+		Map<String, ?> attributes = metadata.getAnnotationAttributes(ConditionalOnCloudPlatform.class.getName());
 		Assert.state(attributes != null, "'attributes' must not be null");
 		CloudPlatform cloudPlatform = (CloudPlatform) attributes.get("value");
 		Assert.state(cloudPlatform != null, "'cloudPlatform' must not be null");

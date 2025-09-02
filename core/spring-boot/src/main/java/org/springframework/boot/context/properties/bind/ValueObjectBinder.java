@@ -421,8 +421,8 @@ class ValueObjectBinder implements DataObjectBinder {
 		}
 
 		@Override
-		public @Nullable String @Nullable [] getParameterNames(Constructor<?> constructor) {
-			@Nullable String @Nullable [] names = this.delegate.getParameterNames(constructor);
+		public String[] getParameterNames(Constructor<?> constructor) {
+			String[] names = this.delegate.getParameterNames(constructor);
 			if (names != null) {
 				return names;
 			}
@@ -430,9 +430,11 @@ class ValueObjectBinder implements DataObjectBinder {
 					"Unable to use value object binding with constructor [%s] as parameter names cannot be discovered. "
 							+ "Ensure that the compiler uses the '-parameters' flag",
 					constructor);
-			this.noParameterNamesHandler.accept(message);
+			this.noParameterNamesHandler.accept(message); // may throw in STRICT mode
 			logger.debug(message);
-			return null;
+			// Fallback to zero-length array to satisfy non-null contract while signalling
+			// absence (handler may already have thrown for STRICT mode)
+			return new String[0];
 		}
 
 	}

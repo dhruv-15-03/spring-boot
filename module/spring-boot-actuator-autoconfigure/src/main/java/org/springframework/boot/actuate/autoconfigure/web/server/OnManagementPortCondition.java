@@ -47,7 +47,7 @@ class OnManagementPortCondition extends SpringBootCondition {
 		if (!isWebApplicationContext(context)) {
 			return ConditionOutcome.noMatch(message.because("non web application context"));
 		}
-		Map<String, @Nullable Object> attributes = metadata
+		Map<String, ?> attributes = metadata
 			.getAnnotationAttributes(ConditionalOnManagementPort.class.getName());
 		Assert.state(attributes != null, "'attributes' must not be null");
 		ManagementPortType requiredType = (ManagementPortType) attributes.get("value");

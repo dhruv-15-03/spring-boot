@@ -155,8 +155,7 @@ public abstract class AbstractNestedCondition extends SpringBootCondition implem
 
 		@SuppressWarnings("unchecked")
 		private List<String[]> getConditionClasses(AnnotatedTypeMetadata metadata) {
-			MultiValueMap<String, @Nullable Object> attributes = metadata
-				.getAllAnnotationAttributes(Conditional.class.getName(), true);
+			MultiValueMap<String, ?> attributes = metadata.getAllAnnotationAttributes(Conditional.class.getName(), true);
 			Object values = (attributes != null) ? attributes.get("value") : null;
 			return (List<String[]>) ((values != null) ? values : Collections.emptyList());
 		}

@@ -50,7 +50,7 @@ abstract class ServletComponentHandler {
 		return this.typeFilter;
 	}
 
-	protected String[] extractUrlPatterns(Map<String, @Nullable Object> attributes) {
+	protected String[] extractUrlPatterns(Map<String, ?> attributes) {
 		String[] value = (String[]) attributes.get("value");
 		String[] urlPatterns = (String[]) attributes.get("urlPatterns");
 		Assert.state(urlPatterns != null, "'urlPatterns' must not be null");
@@ -62,7 +62,7 @@ abstract class ServletComponentHandler {
 		return value;
 	}
 
-	protected final Map<String, String> extractInitParameters(Map<String, @Nullable Object> attributes) {
+	protected final Map<String, String> extractInitParameters(Map<String, ?> attributes) {
 		Map<String, String> initParameters = new HashMap<>();
 		AnnotationAttributes[] initParams = (AnnotationAttributes[]) attributes.get("initParams");
 		Assert.state(initParams != null, "'initParams' must not be null");
@@ -77,14 +77,13 @@ abstract class ServletComponentHandler {
 	}
 
 	void handle(AnnotatedBeanDefinition beanDefinition, BeanDefinitionRegistry registry) {
-		Map<String, @Nullable Object> attributes = beanDefinition.getMetadata()
-			.getAnnotationAttributes(this.annotationType.getName());
+		Map<String, ?> attributes = beanDefinition.getMetadata().getAnnotationAttributes(this.annotationType.getName());
 		if (attributes != null) {
 			doHandle(attributes, beanDefinition, registry);
 		}
 	}
 
-	protected abstract void doHandle(Map<String, @Nullable Object> attributes, AnnotatedBeanDefinition beanDefinition,
+	protected abstract void doHandle(Map<String, ?> attributes, AnnotatedBeanDefinition beanDefinition,
 			BeanDefinitionRegistry registry);
 
 }

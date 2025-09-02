@@ -39,7 +39,7 @@ class WebListenerHandler extends ServletComponentHandler {
 	}
 
 	@Override
-	protected void doHandle(Map<String, @Nullable Object> attributes, AnnotatedBeanDefinition beanDefinition,
+	protected void doHandle(Map<String, ?> attributes, AnnotatedBeanDefinition beanDefinition,
 			BeanDefinitionRegistry registry) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 			.rootBeanDefinition(ServletComponentWebListenerRegistrar.class);

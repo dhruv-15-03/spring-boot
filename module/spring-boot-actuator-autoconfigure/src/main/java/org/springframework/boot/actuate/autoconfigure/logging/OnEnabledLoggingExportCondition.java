@@ -64,7 +64,7 @@ class OnEnabledLoggingExportCondition extends SpringBootCondition {
 	}
 
 	private static @Nullable String getExporterName(AnnotatedTypeMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata
+		Map<String, ?> attributes = metadata
 			.getAnnotationAttributes(ConditionalOnEnabledLoggingExport.class.getName());
 		if (attributes == null) {
 			return null;

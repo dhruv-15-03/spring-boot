@@ -70,6 +70,7 @@ public final class EndpointAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	CachingOperationInvokerAdvisor endpointCachingOperationInvokerAdvisor(Environment environment) {
+		// EndpointIdTimeToLivePropertyFunction returns non-null TTL values; generics are non-null.
 		return new CachingOperationInvokerAdvisor(new EndpointIdTimeToLivePropertyFunction(environment));
 	}
 

@@ -42,8 +42,7 @@ class OnExpressionCondition extends SpringBootCondition {
 
 	@Override
 	public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		Map<String, @Nullable Object> attributes = metadata
-			.getAnnotationAttributes(ConditionalOnExpression.class.getName());
+		Map<String, ?> attributes = metadata.getAnnotationAttributes(ConditionalOnExpression.class.getName());
 		Assert.state(attributes != null, "'attributes' must not be null");
 		String expression = (String) attributes.get("value");
 		Assert.state(expression != null, "'expression' must not be null");
