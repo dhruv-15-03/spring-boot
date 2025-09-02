@@ -17,8 +17,7 @@
 package org.springframework.boot.cassandra.docker.compose;
 
 import java.util.Map;
-
-import org.jspecify.annotations.Nullable;
+ 
 
 /**
  * Cassandra environment details.
@@ -29,13 +28,16 @@ class CassandraEnvironment {
 
 	private final String datacenter;
 
-	CassandraEnvironment(Map<String, @Nullable String> env) {
+	// Accept any Map value type to avoid nullability generic mismatch from different
+	// RunningService.env() implementations (may declare Map<String,String>) while still
+	// treating potential null values correctly.
+	CassandraEnvironment(Map<String, ?> env) {
 		this.datacenter = getDatacenter(env);
 	}
 
-	private static String getDatacenter(Map<String, @Nullable String> env) {
-		String datacenter = env.getOrDefault("CASSANDRA_DC", env.get("CASSANDRA_DATACENTER"));
-		return (datacenter != null) ? datacenter : "datacenter1";
+	private static String getDatacenter(Map<String, ?> env) {
+		Object datacenter = env.containsKey("CASSANDRA_DC") ? env.get("CASSANDRA_DC") : env.get("CASSANDRA_DATACENTER");
+		return (datacenter instanceof String value && !value.isEmpty()) ? value : "datacenter1";
 	}
 
 	String getDatacenter() {
