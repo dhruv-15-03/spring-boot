@@ -1,0 +1,52 @@
+{
+  "properties": [
+    {
+      "name": "spring.boot.usage.report.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Enable runtime usage reporting and the bootusage endpoint."
+    },
+    {
+      "name": "spring.boot.usage.report.cache-ttl",
+      "type": "java.time.Duration",
+      "defaultValue": "0ms",
+      "description": "Endpoint cache TTL. 0 disables caching."
+    },
+    {
+      "name": "spring.boot.usage.report.include-origins",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Include sanitized bean origin locations in the report."
+    },
+    {
+      "name": "spring.boot.usage.report.include-confidence",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Include heuristic confidence scoring in suggestions."
+    },
+    {
+      "name": "spring.boot.usage.report.detect-unused-jars",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Attempt best-effort detection of unused jars."
+    },
+    {
+      "name": "spring.boot.usage.report.markdown-summary",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Also write a Markdown summary to output-dir."
+    },
+    {
+      "name": "spring.boot.usage.report.output-dir",
+      "type": "java.lang.String",
+      "defaultValue": "build/boot-usage",
+      "description": "Output directory for persisted reports."
+    },
+    {
+      "name": "spring.boot.usage.report.policies.fail-on-violation",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Fail startup on first policy violation (not enabled by default in this starter)."
+    }
+  ]
+}

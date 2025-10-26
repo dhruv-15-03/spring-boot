@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.boot.actuate.endpoint.annotation.Selector;
 
 import io.github.dhruv1503.bootusage.autoconfigure.UsageReportService;
 
@@ -18,7 +17,8 @@ public class UsageEndpoint {
     }
 
     @ReadOperation
-    public Map<String, Object> usage() {
-        return this.reportService.generateReport();
+    public Map<String, Object> usage(Boolean force) {
+        boolean bypass = force != null && force;
+        return this.reportService.generateReport(bypass);
     }
 }

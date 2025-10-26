@@ -11,7 +11,11 @@ import org.springframework.context.annotation.Bean;
 public class UsageAnalysisAutoConfiguration {
 
     @Bean
-    public UsageReportService usageReportService(UsageReportProperties properties) {
-        return new UsageReportService(properties);
+    public UsageReportService usageReportService(UsageReportProperties properties,
+            org.springframework.context.ApplicationContext context,
+            org.springframework.beans.factory.ObjectProvider<UsageReportCustomizer> customizers,
+            org.springframework.beans.factory.ObjectProvider<UsagePolicy> policies,
+            org.springframework.core.env.Environment environment) {
+        return new UsageReportService(properties, context, customizers, policies, environment);
     }
 }
