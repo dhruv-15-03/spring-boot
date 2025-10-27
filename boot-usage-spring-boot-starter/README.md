@@ -24,6 +24,18 @@ management.endpoints.web.exposure.include=bootusage
 management.endpoint.bootusage.enabled=true
 ```
 
+Call the endpoint:
+
+```
+GET /actuator/bootusage
+```
+
+Optional query parameter `force=true` bypasses cache:
+
+```
+GET /actuator/bootusage?force=true
+```
+
 Optional properties:
 - `spring.boot.usage.report.cache-ttl`: millis, 0 = no cache
 - `spring.boot.usage.report.include-origins`: default false
