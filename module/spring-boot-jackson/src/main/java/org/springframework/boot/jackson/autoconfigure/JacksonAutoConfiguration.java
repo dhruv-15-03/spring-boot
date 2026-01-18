@@ -29,8 +29,10 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import org.jspecify.annotations.Nullable;
+import tools.jackson.core.json.JsonFactory;
 import tools.jackson.databind.JacksonModule;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.PropertyNamingStrategies;
@@ -40,6 +42,7 @@ import tools.jackson.databind.cfg.DateTimeFeature;
 import tools.jackson.databind.cfg.MapperBuilder;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.dataformat.cbor.CBORMapper;
+import tools.jackson.dataformat.xml.XmlMapper;
 
 import org.springframework.aot.hint.ReflectionHints;
 import org.springframework.aot.hint.RuntimeHints;
@@ -65,6 +68,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.Ordered;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.json.ProblemDetailJacksonMixin;
+import org.springframework.http.converter.json.ProblemDetailJacksonXmlMixin;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
@@ -94,8 +98,9 @@ public final class JacksonAutoConfiguration {
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	@ConditionalOnMissingBean
-	JsonMapper.Builder jsonMapperBuilder(List<JsonMapperBuilderCustomizer> customizers) {
-		JsonMapper.Builder builder = JsonMapper.builder();
+	JsonMapper.Builder jsonMapperBuilder(ObjectProvider<JsonFactory> jsonFactory,
+			List<JsonMapperBuilderCustomizer> customizers) {
+		JsonMapper.Builder builder = JsonMapper.builder(jsonFactory.getIfAvailable(JsonFactory::new));
 		customize(builder, customizers);
 		return builder;
 	}
@@ -163,7 +168,7 @@ public final class JacksonAutoConfiguration {
 
 	@Configuration(proxyBeanMethods = false)
 	@ConditionalOnClass(ProblemDetail.class)
-	static class ProblemDetailsConfiguration {
+	static class JsonProblemDetailsConfiguration {
 
 		@Bean
 		ProblemDetailJsonMapperBuilderCustomizer problemDetailJsonMapperBuilderCustomizer() {
@@ -236,6 +241,80 @@ public final class JacksonAutoConfiguration {
 
 	}
 
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(XmlMapper.class)
+	@EnableConfigurationProperties(JacksonXmlProperties.class)
+	static class XmlConfiguration {
+
+		@Bean
+		@ConditionalOnMissingBean
+		XmlMapper xmlMapper(XmlMapper.Builder builder) {
+			return builder.build();
+		}
+
+		@Bean
+		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+		@ConditionalOnMissingBean
+		XmlMapper.Builder xmlMapperBuilder(List<XmlMapperBuilderCustomizer> customizers) {
+			XmlMapper.Builder builder = XmlMapper.builder();
+			customize(builder, customizers);
+			return builder;
+		}
+
+		private void customize(XmlMapper.Builder builder, List<XmlMapperBuilderCustomizer> customizers) {
+			for (XmlMapperBuilderCustomizer customizer : customizers) {
+				customizer.customize(builder);
+			}
+		}
+
+		@Bean
+		StandardXmlMapperBuilderCustomizer standardXmlMapperBuilderCustomizer(JacksonProperties jacksonProperties,
+				ObjectProvider<JacksonModule> modules, JacksonXmlProperties xmlProperties) {
+			return new StandardXmlMapperBuilderCustomizer(jacksonProperties, modules.stream().toList(), xmlProperties);
+		}
+
+		@Configuration(proxyBeanMethods = false)
+		@ConditionalOnClass(ProblemDetail.class)
+		static class XmlProblemDetailsConfiguration {
+
+			@Bean
+			ProblemDetailXmlMapperBuilderCustomizer problemDetailXmlMapperBuilderCustomizer() {
+				return new ProblemDetailXmlMapperBuilderCustomizer();
+			}
+
+			static final class ProblemDetailXmlMapperBuilderCustomizer implements XmlMapperBuilderCustomizer {
+
+				@Override
+				public void customize(XmlMapper.Builder builder) {
+					builder.addMixIn(ProblemDetail.class, ProblemDetailJacksonXmlMixin.class);
+				}
+
+			}
+
+		}
+
+		static class StandardXmlMapperBuilderCustomizer extends AbstractMapperBuilderCustomizer<XmlMapper.Builder>
+				implements XmlMapperBuilderCustomizer {
+
+			private final JacksonXmlProperties xmlProperties;
+
+			StandardXmlMapperBuilderCustomizer(JacksonProperties jacksonProperties, Collection<JacksonModule> modules,
+					JacksonXmlProperties xmlProperties) {
+				super(jacksonProperties, modules);
+				this.xmlProperties = xmlProperties;
+			}
+
+			@Override
+			public void customize(XmlMapper.Builder builder) {
+				super.customize(builder);
+				configureFeatures(builder, this.xmlProperties.getRead(), builder::configure);
+				configureFeatures(builder, this.xmlProperties.getWrite(), builder::configure);
+			}
+
+		}
+
+	}
+
 	static class JacksonAutoConfigurationRuntimeHints implements RuntimeHintsRegistrar {
 
 		@Override
@@ -295,9 +374,10 @@ public final class JacksonAutoConfiguration {
 			if (this.jacksonProperties.isFindAndAddModules()) {
 				builder.findAndAddModules(getClass().getClassLoader());
 			}
-			if (this.jacksonProperties.getDefaultPropertyInclusion() != null) {
-				builder.changeDefaultPropertyInclusion(
-						(handler) -> handler.withValueInclusion(this.jacksonProperties.getDefaultPropertyInclusion()));
+			Include propertyInclusion = this.jacksonProperties.getDefaultPropertyInclusion();
+			if (propertyInclusion != null) {
+				builder.changeDefaultPropertyInclusion((handler) -> handler.withValueInclusion(propertyInclusion)
+					.withContentInclusion(propertyInclusion));
 			}
 			if (this.jacksonProperties.getTimeZone() != null) {
 				builder.defaultTimeZone(this.jacksonProperties.getTimeZone());
