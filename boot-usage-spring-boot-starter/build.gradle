@@ -1,15 +1,18 @@
 plugins {
     id 'java'
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
     id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'io.github.dhruv1503'
-version = '0.1.0-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
+description = 'Spring Boot starter for runtime usage analysis and reporting'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(23)
     }
     withSourcesJar()
     withJavadocJar()
@@ -19,16 +22,18 @@ repositories {
     mavenCentral()
 }
 
-// Use the same Spring Boot version as your target apps; adjust as needed
+// Use the same Spring Boot version as your target apps
 ext {
     springBootVersion = '3.3.5'
 }
 
 dependencies {
     api platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    annotationProcessor platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
 
     api 'org.springframework.boot:spring-boot-autoconfigure'
     compileOnly 'org.springframework.boot:spring-boot-actuator'
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -42,4 +47,69 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// Publishing configuration for Maven Central
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'Boot Usage Spring Boot Starter'
+                description = project.description
+                url = 'https://github.com/dhruv-15-03/boot-usage-spring-boot-starter'
+                inceptionYear = '2024'
+
+                licenses {
+                    license {
+                        name = 'Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'dhruv1503'
+                        name = 'Dhruv Bansal'
+                        email = 'dhruv.bansal@example.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/dhruv-15-03/boot-usage-spring-boot-starter.git'
+                    developerConnection = 'scm:git:ssh://github.com:dhruv-15-03/boot-usage-spring-boot-starter.git'
+                    url = 'https://github.com/dhruv-15-03/boot-usage-spring-boot-starter'
+                }
+
+                issueManagement {
+                    system = 'GitHub Issues'
+                    url = 'https://github.com/dhruv-15-03/boot-usage-spring-boot-starter/issues'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'OSSRH'
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = findProperty('ossrhUsername') ?: System.getenv('OSSRH_USERNAME')
+                password = findProperty('ossrhPassword') ?: System.getenv('OSSRH_PASSWORD')
+            }
+        }
+    }
+}
+
+signing {
+    // Only sign if credentials are available
+    required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask('publish') }
+    sign publishing.publications.mavenJava
+}
+
+tasks.javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
 }

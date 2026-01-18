@@ -53,6 +53,9 @@ do as they were designed before this was clarified.
 | https://github.com/bitcoin/bitcoin[Bitcoin]
 | https://github.com/theborakompanioni/bitcoin-spring-boot-starter
 
+| Boot Usage (Starter usage analysis)
+| https://github.com/dhruv-15-03/boot-usage
+
 | https://github.com/vladimir-bukhtoyarov/bucket4j/[Bucket4j]
 | https://github.com/MarcGiffing/bucket4j-spring-boot-starter
 

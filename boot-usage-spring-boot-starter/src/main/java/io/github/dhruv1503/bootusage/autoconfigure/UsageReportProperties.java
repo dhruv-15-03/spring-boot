@@ -2,54 +2,131 @@ package io.github.dhruv1503.bootusage.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Configuration properties for the Boot Usage Report feature.
+ * <p>
+ * All properties are prefixed with {@code spring.boot.usage.report}.
+ *
+ * @author Dhruv
+ * @since 0.1.0
+ */
 @ConfigurationProperties(prefix = "spring.boot.usage.report")
 public class UsageReportProperties {
 
-    /** Master switch to enable generation/exposure. */
+    /**
+     * Master switch to enable the usage report feature and endpoint.
+     * When enabled, a usage report will be generated on application startup
+     * and the /actuator/bootusage endpoint will be available.
+     */
     private boolean enabled = false;
 
-    /** Cache TTL for the actuator endpoint in milliseconds (0 = no cache). */
+    /**
+     * Cache TTL for the actuator endpoint in milliseconds.
+     * Set to 0 to disable caching (report is regenerated on each request).
+     * Default: 0 (no cache).
+     */
     private long cacheTtl = 0L;
 
-    /** Include sanitized bean origin locations. */
+    /**
+     * Include sanitized bean origin locations in the report.
+     * When enabled, each bean will include information about where it was defined.
+     * Paths are sanitized to remove user-specific directory information.
+     */
     private boolean includeOrigins = false;
 
-    /** Include heuristic confidence scoring. */
+    /**
+     * Include heuristic confidence scoring in suggestions.
+     * Adds notes about the reliability of heuristic-based detections.
+     */
     private boolean includeConfidence = false;
 
-    /** Detect jars on the classpath that appear unused. */
+    /**
+     * Attempt best-effort detection of unused JARs on the classpath.
+     * Identifies JARs that don't appear to contribute any bean definitions.
+     * Note: Runtime-only JARs (logging, serialization) are filtered out.
+     */
     private boolean detectUnusedJars = false;
 
-    /** Also write a Markdown summary. */
+    /**
+     * Also write a human-readable Markdown summary to the output directory.
+     * The Markdown file provides a formatted view of the usage report.
+     */
     private boolean markdownSummary = false;
 
-    /** Output directory for the generated report. */
+    /**
+     * Output directory for persisted reports (JSON and optional Markdown).
+     * Relative paths are resolved from the application's working directory.
+     */
     private String outputDir = "build/boot-usage";
 
-    /** Fail startup on first policy violation. */
+    /**
+     * Fail startup if any usage policy returns violations.
+     * When enabled, the application context will fail to start if policies detect issues.
+     * Use this to enforce architectural constraints.
+     */
     private boolean policiesFailOnViolation = false;
 
-    public boolean isEnabled() { return enabled; }
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 
-    public long getCacheTtl() { return cacheTtl; }
-    public void setCacheTtl(long cacheTtl) { this.cacheTtl = cacheTtl; }
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
-    public boolean isIncludeOrigins() { return includeOrigins; }
-    public void setIncludeOrigins(boolean includeOrigins) { this.includeOrigins = includeOrigins; }
+    public long getCacheTtl() {
+        return this.cacheTtl;
+    }
 
-    public boolean isIncludeConfidence() { return includeConfidence; }
-    public void setIncludeConfidence(boolean includeConfidence) { this.includeConfidence = includeConfidence; }
+    public void setCacheTtl(long cacheTtl) {
+        this.cacheTtl = cacheTtl;
+    }
 
-    public boolean isDetectUnusedJars() { return detectUnusedJars; }
-    public void setDetectUnusedJars(boolean detectUnusedJars) { this.detectUnusedJars = detectUnusedJars; }
+    public boolean isIncludeOrigins() {
+        return this.includeOrigins;
+    }
 
-    public boolean isMarkdownSummary() { return markdownSummary; }
-    public void setMarkdownSummary(boolean markdownSummary) { this.markdownSummary = markdownSummary; }
+    public void setIncludeOrigins(boolean includeOrigins) {
+        this.includeOrigins = includeOrigins;
+    }
 
-    public String getOutputDir() { return outputDir; }
-    public void setOutputDir(String outputDir) { this.outputDir = outputDir; }
+    public boolean isIncludeConfidence() {
+        return this.includeConfidence;
+    }
 
-    public boolean isPoliciesFailOnViolation() { return policiesFailOnViolation; }
-    public void setPoliciesFailOnViolation(boolean policiesFailOnViolation) { this.policiesFailOnViolation = policiesFailOnViolation; }
+    public void setIncludeConfidence(boolean includeConfidence) {
+        this.includeConfidence = includeConfidence;
+    }
+
+    public boolean isDetectUnusedJars() {
+        return this.detectUnusedJars;
+    }
+
+    public void setDetectUnusedJars(boolean detectUnusedJars) {
+        this.detectUnusedJars = detectUnusedJars;
+    }
+
+    public boolean isMarkdownSummary() {
+        return this.markdownSummary;
+    }
+
+    public void setMarkdownSummary(boolean markdownSummary) {
+        this.markdownSummary = markdownSummary;
+    }
+
+    public String getOutputDir() {
+        return this.outputDir;
+    }
+
+    public void setOutputDir(String outputDir) {
+        this.outputDir = outputDir;
+    }
+
+    public boolean isPoliciesFailOnViolation() {
+        return this.policiesFailOnViolation;
+    }
+
+    public void setPoliciesFailOnViolation(boolean policiesFailOnViolation) {
+        this.policiesFailOnViolation = policiesFailOnViolation;
+    }
 }
